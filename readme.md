@@ -12,50 +12,35 @@
 
 
 
-<!-- TABLE OF CONTENTS -->
-<details open="open">
-  <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
-  </ol>
-</details>
-
-
 
 <!-- ABOUT THE PROJECT -->
+<!--
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
-
+-->
 
 
 ### Built With
 
-* []()
-* []()
-* []()
+* []()Flutter
+* []()Firebase
+* []()dis dick eyyo
 
 
 
 <!-- LICENSE -->
-## License
+## Legal Shit
 
 Distributed under the "it's my fucking shit dont you dare steal it" License. See `LICENSE` for more information.
+
 
 
 
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
+Mark Zakharyan - [Instagram - @markzakharyan](https://instagram.com/markzakharyan) - markazakharyan@gmail.com
 
 Project Link: [https://github.com/markzakharyan/oneschool](https://github.com/markzakharyan/oneschool)
 
@@ -64,6 +49,6 @@ Project Link: [https://github.com/markzakharyan/oneschool](https://github.com/ma
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* []()
-* []()
-* []()
+* []()Thank you to myself for making this
+* []()Thank you to ryan alavi for promising to spread this like covid 21
+* []()Thank you to andre qin for being a sexy femboy <3
