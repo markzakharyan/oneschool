@@ -34,8 +34,9 @@
 
 Distributed under the "it's my fucking shit dont you dare steal it" License. See `LICENSE` for more information.
 
+[Terms of Service](https://fuckoff.com)
 
-
+[Privacy Policy](https://fuckoff.com)
 
 <!-- CONTACT -->
 ## Contact
