@@ -1,3 +1,6 @@
+TODO: ADD 
+pod 'Firebase/Analytics' TO PODFILE AFTER POD INIT \(mac\)
+
 <p align="center">
   <a href="https://github.com/markzakharyan/oneschool">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
