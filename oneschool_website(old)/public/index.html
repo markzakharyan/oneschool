@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>OneSchool — by Mark Zakharyan</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,400,700,900" rel="stylesheet">
+    <link rel="stylesheet" href="one.css">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round&amp;display=swap" rel="stylesheet" tyoe="text/css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+
+</head>
+<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300" data-aos-easing="slide" data-aos-duration="800" data-aos-delay="0">
+    <script src="js/google-auth.js"></script>
+    <!-- Get rid of uselss angular code later -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js"></script>
+    <div class="site-wrap">
+
+        <div class="intro-section" id="home-section">
+            <div id="demo-modal" class="modal">
+                <div class="modal__content">
+                    <h1 style="color:black">Select Classes</h1>
+
+
+
+                    <div class="form-control" style="cursor:text;display:inline-block" ng-class="{focus:isFocused}" ng-app="SuggestedQuery" ng-controller="suggestionInputCtrl as main" ng-click="editInput()">
+                        <div class='editable' ng-focus='isFocused = true;' contenteditable ng-model="inputQuery"></div><div class="suggested noselect">{{suggestedQuery}}</div>
+                    </div>
+                    <div id="checklist"></div>
+
+                    <div style="position:absolute;bottom:2em;width:85%">
+
+                        <script src="js/course-search.js"></script>
+
+                        <button class="wrapper btn btn-primary" onclick="getSelectedCourses();" type="button">
+                            All Classes Selected
+                        </button>
+                    </div>
+
+
+                    <a href="#" class="modal__close">&times;</a>
+                </div>
+            </div>
+            <div class="slide-1" style="background-image: url(&quot;images/Canvas-photo.jpg&quot;)">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <div class="row align-items-center">
+                                <div class="col-lg-6 mb-4">
+                                    <h1>OneSchool</h1>
+                                    <p class="mb-4">OneSchool helps you stay connected with classmates by automatically adding you to the Discord group chats for the courses you're enrolled in.</p>
+                                    <!-- <p data-aos="fade-up" data-aos-delay="300" class="aos-init aos-animate"><a href="#" class="btn btn-primary py-3 px-5 btn-pill">Start</a></p> -->
+                                </div>
+                                <div class="col-lg-5 ml-auto">
+                                    <form action="#" method="post" class="form-box">
+                                        <h3 class="h4 text-black mb-4">3 Easy Steps</h3>
+
+                                        <div class="form-group" id="form-group">
+
+                                            <input type="text" id="userText" class="form-control" placeholder="First and Last Name">
+
+                                            <img id="status1" class="status" src="images/checkmark.png" style="display: none;">
+
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <button class="btn-disc btn-1-disc form-control">
+                                                <img src="/images/Discord-Logo-White.svg" style="height:95%;padding-right:10px"
+                                                     onclick="window.open('https://discord.com/api/oauth2/authorize?client_id=849550740224737310&redirect_uri=https%3A%2F%2Foneschool-discord.web.app&response_type=code&scope=identify%20guilds.join'); return false;" />
+                                                Sign in with Discord
+                                            </button>
+
+                                        </div>
+
+                                        <!--
+                                        <div class="form-group mb-4">
+                                            <input type="password" class="form-control" placeholder="will be what classes are you taking button">
+                                        </div>
+                                        -->
+
+                                        <div class="form-group">
+                                            <button class="wrapper btn btn-primary" onclick="window.location.href='#demo-modal'" type="button">
+                                                Open Modal
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="site-section" id="teachers-section">
+            <div class="container">
+                <div class="row mb-5 justify-content-center">
+                    <div class="col-lg-7 mb-5 text-center">
+                        <h2 class="section-title">Information</h2>
+                        <p class="mb-5">OneSchool uses the classes you're taking and automatically places you in the corresponding group chats for those classes. Information provided to OneSchool may be used for security purposes and to make other Mark Zakharyan Productions more useful to you.</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="teacher text-center">
+                            <!--Make google logo image local-->
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2048px-Google_%22G%22_Logo.svg.png" alt="Google logo" class="img-fluid w-50 mx-auto mb-4">
+                            <div class="py-2">
+                                <h3 class="text-black">Step One</h3>
+                                <p class="position">Sign in with school Google account</p>
+                                <p>This is required to ensure security by preventing fake or unathorized accounts from accessing your class chats.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="teacher text-center">
+                            <img src="images/Discord-Logo-Color.svg" alt="Discord Logo" class="img-fluid w-50 mx-auto mb-4">
+                            <div class="py-2">
+                                <h3 class="text-black">Step Two</h3>
+                                <p class="position">Sign in with Discord</p>
+                                <p>This will allow OneSchool to automatically add you to the proper groupchats. Discord is also used to ensure security.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="teacher text-center">
+                            <img src="images/three-people.png" style="width:100%" alt="Classes Icon" class="img-fluid w-50 mx-auto mb-4">
+                            <div class="py-2">
+                                <h3 class="text-black">Step Three</h3>
+                                <p class="position">Enter your classes</p>
+                                <p>Entering the classes you're taking allows OneSchool to place you in the corresponding chats for your classes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <footer class="footer-section bg-white">
+            <div class="container">
+
+                <div class="row pt-5 mt-5 text-center">
+                    <div class="col-md-12">
+                        <div class="border-top pt-5">
+                            <p>
+                                <a href="google.com">Terms of Service</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <a href="google.com">Privacy Policy</a>
+                            </p>
+                            <p>
+
+                                A Mark Zakharyan Production | Copyright ©
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <!--
+        <script>
+            function countWords(s) {
+                s = s.replace(/(^\s*)|(\s*$)/gi, "");//exclude  start and end white-space
+                s = s.replace(/[ ]{2,}/gi, " ");//2 or more space to 1
+                s = s.replace(/\n /, "\n"); // exclude newline with a start spacing
+                return s.split(' ').filter(function (str) { return str != ""; }).length;
+                //return s.split(' ').filter(String).length; - this can also be used
+            }
+
+            var userInput = document.getElementById('userText');
+            userInput.onkeyup = function () {
+                console.log(this.value);
+                if (countWords(this.value) >= 2) {
+                    console.log("worked1")
+                    document.getElementById("status1").style.display = 'block';
+                } else {
+                    console.log("didntwork2")
+                    document.getElementById("status1").style.display = 'none';
+                }
+            }
+
+
+            window.onload = function () {
+                document.getElementById("status1").style.display = 'none';
+            }
+
+
+        </script>
+    -->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="/__/firebase/8.6.3/firebase-app.js"></script>
+    <script src="/__/firebase/8.6.3/firebase-analytics.js"></script>
+    <script src="/__/firebase/8.6.3/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-auth.js"></script>
+
+    <!-- Initialize Firebase -->
+    <script src="/__/firebase/init.js"></script>
+
+
+
+
+
+</body>
+</html>
