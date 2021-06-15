@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "691411297030",
+    "firebase_url": "https://oneschool-discord-default-rtdb.firebaseio.com",
+    "project_id": "oneschool-discord",
+    "storage_bucket": "oneschool-discord.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:691411297030:android:08e0bf9f525d5b6568f487",
+        "android_client_info": {
+          "package_name": "com.markzakharyan.oneschool"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "691411297030-chddrle6jkinh0r675l3mtednio584a9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0O59TmRtjiMnAaJyeT_L43w4HSiEuFoY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "691411297030-chddrle6jkinh0r675l3mtednio584a9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "691411297030-f0k5i051pkmvf3ech56mvcofqlv5ohe4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.markzakharyan.oneschool"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
