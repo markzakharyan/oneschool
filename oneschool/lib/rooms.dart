@@ -5,24 +5,110 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'chat.dart';
 import 'login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'users.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'signintest.dart';
 
 class RoomsPage extends StatefulWidget {
   const RoomsPage({Key? key}) : super(key: key);
 
   @override
   _RoomsPageState createState() => _RoomsPageState();
+
 }
 
+
+
+Widget latestMessageAgoFormat(String text) {
+  return Text(text,
+      style: TextStyle(color: text == 'ERROR' ? Colors.red : Colors.grey[350]),
+  );
+}
+
+
+var latestMessageAgo;
+Widget _latestMessageAgo(types.Room room) {
+  return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('rooms')
+          .doc('${room.id}')
+          .snapshots(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return latestMessageAgoFormat('ERROR');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return latestMessageAgoFormat(latestMessageAgo == null
+              ? 'Loading...'
+              : latestMessageAgo);
+        }
+
+        Map<String, dynamic> dataMap = snapshot.data!.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
+        latestMessageAgo = dataMap.containsKey('lastMessage')
+            ? timeago.format(dataMap['lastMessage']['createdAt'].toDate())
+            : '';
+
+        return latestMessageAgoFormat(latestMessageAgo);
+      });
+}
+
+
+Widget latestMessageFormat(String text) {
+  return Text(text,
+      style: TextStyle(color: text == 'Something went wrong collecting the latest message' ? Colors.red : Colors.grey, fontSize: 15, height: 1.1),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis);
+}
+
+var latestMessageDisplayText;
+Widget _latestMessage(types.Room room) {
+  return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('rooms')
+          .doc('${room.id}')
+          .snapshots(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return latestMessageFormat('Something went wrong collecting the latest message');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return latestMessageFormat(latestMessageDisplayText == null
+              ? 'Loading...'
+              : latestMessageDisplayText);
+        }
+
+        Map<String, dynamic> dataMap = snapshot.data!.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
+        latestMessageDisplayText = dataMap.containsKey('lastMessage')
+            ? dataMap['lastMessage']['text']
+            : 'No messages yet';
+
+        return latestMessageFormat(latestMessageDisplayText);
+      });
+}
+
+
+
+
+
 class _RoomsPageState extends State<RoomsPage> {
+
+
+
   bool _error = false;
   bool _initialized = false;
-  User? _user;
+  late User? _user;
+  ThemeBloc? _themeBloc;
 
   @override
   void initState() {
-    initializeFlutterFire();
     super.initState();
+    initializeFlutterFire();
+    _themeBloc = ThemeBloc();
   }
 
   void initializeFlutterFire() async {
@@ -41,14 +127,79 @@ class _RoomsPageState extends State<RoomsPage> {
         _error = true;
       });
     }
+    if (_user == null) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => SignUp4(themeBloc: _themeBloc!)),
+    (Route<dynamic> route) => false);
+    }
   }
 
   void logout() async {
     await FirebaseAuth.instance.signOut();
   }
 
+
+  Widget _verifiedText(chatType, text) {
+    if (['course','schoolClub','schoolSport','offSchoolSport'].contains(chatType)) {
+      return RichText(
+        text: TextSpan(
+          style: TextStyle(fontSize:18,color:Colors.black),
+          children: [
+            TextSpan(text: text),
+            WidgetSpan(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child:Icon(
+                  Icons.check_circle,
+                  color:  chatType == 'course' ? Color(0xff3e5aeb) : Colors.amber,
+                  size: 20,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    else{
+      return Text(text, style: TextStyle(fontSize:18,color:Colors.black));
+    }
+  }
+
+  Widget _verifiedIcon(chatType) {
+    if (['course','schoolClub','schoolSport','offSchoolSport'].contains(chatType)) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          //padding: EdgeInsets.all(3),
+          width: 20,
+          height: 20,
+          color: Colors.white,
+          child: ClipRRect(
+            //borderRadius: BorderRadius.circular(5),
+            child: Icon(
+              Icons.check_circle,
+              color:  chatType == 'course' ? Color(0xff3e5aeb) : Colors.amber,
+              size: 20,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Future reachedEndOfChat(types.Room room) async{
+    return await FirebaseFirestore.instance.collection('rooms').doc('${room.id}').update({
+      'lastSeen' : {'${FirebaseChatCore.instance.firebaseUser?.uid ?? ''}':DateTime.now()}
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+
+
     if (_error) {
       return Container();
     }
@@ -58,13 +209,28 @@ class _RoomsPageState extends State<RoomsPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text('Chats',style: TextStyle(color: Colors.blueAccent, fontSize: 40)),
-        foregroundColor: Colors.blueAccent,
 
+      appBar: AppBar(
+
+      title: Text(
+        'Messages',
+        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xff3e5aeb)),
       ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Color(0xff3e5aeb),
+            ),
+            onPressed: () {
+              // do something
+            },
+          )
+        ],
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      ),
+
       body: _user == null
           ? Container(
               alignment: Alignment.center,
@@ -80,7 +246,7 @@ class _RoomsPageState extends State<RoomsPage> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           fullscreenDialog: true,
-                          builder: (context) => const LoginPage(),
+                          builder: (context) => SignUp4(themeBloc: _themeBloc!),
                         ),
                       );
                     },
@@ -99,7 +265,7 @@ class _RoomsPageState extends State<RoomsPage> {
                     margin: const EdgeInsets.only(
                       bottom: 200,
                     ),
-                    child: const Text('No rooms'),
+                    child: const Text('No CircleChats yet!'),
                   );
                 }
 
@@ -110,6 +276,7 @@ class _RoomsPageState extends State<RoomsPage> {
 
                     return GestureDetector(
                       onTap: () {
+                        reachedEndOfChat(room);
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => ChatPage(
@@ -123,23 +290,65 @@ class _RoomsPageState extends State<RoomsPage> {
                           horizontal: 16,
                           vertical: 8,
                         ),
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 40,
-                              margin: const EdgeInsets.only(
-                                right: 16,
-                              ),
-                              width: 40,
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(20),
+                        child: Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(right: 12.0),
+                                child: Stack(
+                                  children: <Widget>[
+                                    InkWell(
+                                      onTap: () {
+                                        reachedEndOfChat(room);
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => ChatPage(
+                                              room: room,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: CircleAvatar(
+                                        backgroundImage: NetworkImage(room.imageUrl ?? ''),
+                                        backgroundColor: Colors.white,
+                                        radius: 30.0,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 0,
+                                      bottom: 0,
+                                      child: _verifiedIcon(room.metadata?['chatType'] ?? ''),
+                                    ),
+                                  ],
                                 ),
-                                child: Image.network(room.imageUrl ?? ''),
                               ),
-                            ),
-                            Text(room.name ?? 'Room'),
-                          ],
+                              Expanded(
+                                child: Padding(
+                                    padding: EdgeInsets.only(left: 6.0, right: 6.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+
+
+                                        _verifiedText(room.metadata?['chatType'] ?? '', room.name),
+
+                                        Container(
+                                          margin: EdgeInsets.only(top: 4.0),
+                                          child: _latestMessage(room)
+                                        ),
+                                      ],
+                                    )),
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  _latestMessageAgo(room),
+                                  _messagesUnread(room, _user!),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -148,5 +357,90 @@ class _RoomsPageState extends State<RoomsPage> {
               },
             ),
     );
+  }
+}
+
+var messagesUnread;
+var lastSeenTimestamp;
+Widget _messagesUnread(types.Room room, User user) {
+  return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('rooms')
+          .doc('${room.id}')
+          .snapshots(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return _UnreadIndicator(-1);
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _UnreadIndicator(messagesUnread ?? 0);
+        }
+
+        Map<String, dynamic> dataMap = snapshot.data!.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
+        if (dataMap.containsKey('lastMessage')){
+          lastSeenTimestamp = dataMap['lastSeen']['${user.uid}'];
+          return StreamBuilder(
+            stream: FirebaseFirestore.instance.collection('rooms/${room.id}/messages').where('createdAt', isGreaterThanOrEqualTo: lastSeenTimestamp).limit(100).snapshots(),
+            builder: (BuildContext context, AsyncSnapshot snapshot2){
+
+              if (snapshot.hasError) {
+                return _UnreadIndicator(-1);
+              }
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return _UnreadIndicator(messagesUnread ?? 0);
+              }
+
+              if (snapshot2.hasData){
+                print(snapshot2.data.docs.length);
+                print(lastSeenTimestamp);
+                Map<String, dynamic> dataMap2 = snapshot.data!.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
+                print(dataMap2['createdAt']);
+                messagesUnread = snapshot2.data.docs.length;
+              }
+
+              return _UnreadIndicator(messagesUnread);
+
+            }
+          );
+        }
+        else {
+          messagesUnread = 0;
+        }
+        return _UnreadIndicator(messagesUnread);
+      });
+}
+
+
+
+class _UnreadIndicator extends StatelessWidget {
+  final unread;
+
+  _UnreadIndicator(this.unread);
+
+  @override
+  Widget build(BuildContext context) {
+    if (unread == 0 || unread == null) {
+      return Container(); // return empty container
+    } else {
+      return Padding(
+          padding: EdgeInsets.only(top: 8.0),
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                height: 30,
+                color: unread == -1 ? Colors.red : Color(0xff3e5aeb),
+                width: unread == -1 ? 60 : 30,
+                padding: EdgeInsets.all(0),
+                alignment: Alignment.center,
+                child: Text(
+                  unread > 99 ? '>99' : unread == -1 ? 'ERROR' : unread.toString(),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              )));
+    }
   }
 }

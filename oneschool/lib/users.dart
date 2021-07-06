@@ -7,7 +7,12 @@ class UsersPage extends StatelessWidget {
   const UsersPage({Key? key}) : super(key: key);
 
   void _handlePressed(types.User otherUser, BuildContext context) async {
-    final room = await FirebaseChatCore.instance.createGroupRoom(users: [otherUser],name:'New Group Chat',imageUrl:'https://cdn.discordapp.com/avatars/553759641394216961/8ba748296e31adce08102dc58378f2e2.webp?size=256');
+    final room = await FirebaseChatCore.instance.createGroupRoom(
+        users: [otherUser],
+        name:'New Group Chat',
+        imageUrl:'https://cdn.discordapp.com/avatars/553759641394216961/8ba748296e31adce08102dc58378f2e2.webp?size=256',
+        metadata: {"chatType":"course"},
+    );
 
     Navigator.of(context).pop();
     await Navigator.of(context).push(

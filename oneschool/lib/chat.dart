@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({
@@ -21,6 +22,7 @@ class ChatPage extends StatefulWidget {
 
   @override
   _ChatPageState createState() => _ChatPageState();
+
 }
 
 class _ChatPageState extends State<ChatPage> {
@@ -69,6 +71,23 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+
+  Future reachedEndOfChat(types.Room room) async{
+    return await FirebaseFirestore.instance.collection('rooms').doc('${room.id}').update({
+      'lastSeen' : {'${FirebaseChatCore.instance.firebaseUser?.uid ?? ''}':DateTime.now()}
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
   void _handleMessageTap(types.Message message) async {
     if (message is types.FileMessage) {
       var localPath = message.uri;
@@ -91,9 +110,9 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handlePreviewDataFetched(
-    types.TextMessage message,
-    types.PreviewData previewData,
-  ) {
+      types.TextMessage message,
+      types.PreviewData previewData,
+      ) {
     final updatedMessage = message.copyWith(previewData: previewData);
 
     FirebaseChatCore.instance.updateMessage(updatedMessage, widget.room.id);
@@ -187,7 +206,7 @@ class _ChatPageState extends State<ChatPage> {
       // User canceled the picker
     }
   }
-
+  ScrollController scrollController=ScrollController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -208,17 +227,12 @@ class _ChatPageState extends State<ChatPage> {
             stream: FirebaseChatCore.instance.messages(snapshot.data!),
             builder: (context, snapshot) {
               return Chat(
-                showUserAvatars: true,
-                showUserNames: true,
                 isAttachmentUploading: _isAttachmentUploading,
                 messages: snapshot.data ?? [],
                 onAttachmentPressed: _handleAtachmentPress,
                 onMessageTap: _handleMessageTap,
                 onPreviewDataFetched: _handlePreviewDataFetched,
                 onSendPressed: _handleSendPressed,
-                theme: const DefaultChatTheme(
-                  userAvatarNameColors: [Color(0xFF6F60E8)]
-                ),
                 user: types.User(
                   id: FirebaseChatCore.instance.firebaseUser?.uid ?? '',
                 ),

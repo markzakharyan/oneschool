@@ -54,5 +54,5 @@ Project Link: [https://github.com/markzakharyan/oneschool](https://github.com/ma
 ## Acknowledgements
 
 * []()Thank you to myself for making this
-* []()Thank you to ryan alavi for promising to spread this like covid 21
+* []()Thank you to ryan alavi for promising to spread this like covid-21
 * []()Thank you to andre qin for being a sexy femboy <3

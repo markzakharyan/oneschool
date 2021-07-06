@@ -56,8 +56,8 @@ class _BottomNavBarState extends State<MyApp> {
 
             Icon(Icons.account_circle, size: 30, color: Colors.white),
           ],
-          color: Colors.blueAccent,
-          buttonBackgroundColor: Colors.blueAccent,
+          color: Color(0xff3e5aeb),
+          buttonBackgroundColor: Color(0xff3e5aeb),
           backgroundColor: Colors.white24,
           animationCurve: Curves.easeInOut,
           animationDuration: const Duration(milliseconds: 200),
