@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'users.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'signintest.dart';
+import 'pagetitle.dart';
 
 class RoomsPage extends StatefulWidget {
   const RoomsPage({Key? key}) : super(key: key);
@@ -97,11 +98,9 @@ Widget _latestMessage(types.Room room) {
 
 class _RoomsPageState extends State<RoomsPage> {
 
-
-
   bool _error = false;
   bool _initialized = false;
-  late User? _user;
+  User? _user;
   ThemeBloc? _themeBloc;
 
   @override
@@ -126,12 +125,6 @@ class _RoomsPageState extends State<RoomsPage> {
       setState(() {
         _error = true;
       });
-    }
-    if (_user == null) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => SignUp4(themeBloc: _themeBloc!)),
-    (Route<dynamic> route) => false);
     }
   }
 
@@ -210,26 +203,7 @@ class _RoomsPageState extends State<RoomsPage> {
 
     return Scaffold(
 
-      appBar: AppBar(
-
-      title: Text(
-        'Messages',
-        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xff3e5aeb)),
-      ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.search,
-              color: Color(0xff3e5aeb),
-            ),
-            onPressed: () {
-              // do something
-            },
-          )
-        ],
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      ),
+      appBar: pageTitle('Messages',search: true),
 
       body: _user == null
           ? Container(
@@ -380,7 +354,7 @@ Widget _messagesUnread(types.Room room, User user) {
 
         Map<String, dynamic> dataMap = snapshot.data!.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
         if (dataMap.containsKey('lastMessage')){
-          lastSeenTimestamp = dataMap['lastSeen']['${user.uid}'];
+          lastSeenTimestamp = dataMap.containsKey('lastSeen') ? dataMap['lastSeen']['${user.uid}'] : '';
           return StreamBuilder(
             stream: FirebaseFirestore.instance.collection('rooms/${room.id}/messages').where('createdAt', isGreaterThanOrEqualTo: lastSeenTimestamp).limit(100).snapshots(),
             builder: (BuildContext context, AsyncSnapshot snapshot2){
@@ -394,10 +368,7 @@ Widget _messagesUnread(types.Room room, User user) {
               }
 
               if (snapshot2.hasData){
-                print(snapshot2.data.docs.length);
-                print(lastSeenTimestamp);
                 Map<String, dynamic> dataMap2 = snapshot.data!.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
-                print(dataMap2['createdAt']);
                 messagesUnread = snapshot2.data.docs.length;
               }
 

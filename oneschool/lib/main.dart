@@ -1,15 +1,29 @@
-//now gimme head por favor
+// i think i deserve head now por favor
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:oneschool/settings.dart';
+import 'profile.dart';
 import 'package:flutter/material.dart';
 import 'rooms.dart';
 import 'users.dart';
+import 'package:home_indicator/home_indicator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'signintest.dart';
+
+
+User? _user;
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MaterialApp(home: MyApp()));
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+
+    _user = user;
+    //print(_user);
+  });
+
+  await HomeIndicator.hide();
+  runApp(MaterialApp(home: _user != null ? MyApp() : SignUp4(themeBloc: ThemeBloc())));
 }
 
 class MyApp extends StatefulWidget {
@@ -25,11 +39,8 @@ class _BottomNavBarState extends State<MyApp> {
   final List<Widget> _pages = <Widget>[
     const UsersPage(),
     const RoomsPage(),
-    SettingsScreen(),
+    ProfileScreen(),
   ];
-
-
-
 
 
 
@@ -42,16 +53,12 @@ class _BottomNavBarState extends State<MyApp> {
         child: _pages.elementAt(_page),
       ),
 
-
-
-
-
         bottomNavigationBar: CurvedNavigationBar(
           key: _bottomNavigationKey,
           index: 1,
           height: 50.0,
           items: <Widget>[
-            Icon(Icons.search, size: 30, color: Colors.white),
+            Icon(Icons.maps_ugc, size: 30, color: Colors.white),
             Icon(Icons.group, size: 30, color: Colors.white),
 
             Icon(Icons.account_circle, size: 30, color: Colors.white),

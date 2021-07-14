@@ -11,6 +11,8 @@ import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'rooms.dart';
+
 
 class ChatPage extends StatefulWidget {
   const ChatPage({
@@ -211,13 +213,25 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text('Chat',style: TextStyle(color: Colors.blueAccent, fontSize: 40)),
-        iconTheme: const IconThemeData(
-          color: Colors.blueAccent,
+        centerTitle: false,
+        title: Text(
+          'Chat',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xff3e5aeb)),
         ),
-      ),
+        leading:
+          IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Color(0xff3e5aeb),
+            ),
+            onPressed: () {
+              // do something
+              Navigator.pop(context);
+            },
+          ),
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    ),
       body: StreamBuilder<types.Room>(
         initialData: widget.room,
         stream: FirebaseChatCore.instance.room(widget.room.id),
@@ -227,6 +241,9 @@ class _ChatPageState extends State<ChatPage> {
             stream: FirebaseChatCore.instance.messages(snapshot.data!),
             builder: (context, snapshot) {
               return Chat(
+                theme: const DefaultChatTheme(primaryColor: Color(0xff3e5aeb)),
+                showUserAvatars: true,
+                showUserNames: true,
                 isAttachmentUploading: _isAttachmentUploading,
                 messages: snapshot.data ?? [],
                 onAttachmentPressed: _handleAtachmentPress,
