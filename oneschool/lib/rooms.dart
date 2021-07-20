@@ -84,8 +84,8 @@ Widget _latestMessage(types.Room room) {
         }
 
         Map<String, dynamic> dataMap = snapshot.data!.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
-        latestMessageDisplayText = dataMap.containsKey('lastMessage')
-            ? dataMap['lastMessage']['text']
+        latestMessageDisplayText = dataMap.containsKey('lastMessages')
+            ? dataMap['lastMessages'][0]['text']
             : 'No messages yet';
 
         return latestMessageFormat(latestMessageDisplayText);
@@ -230,7 +230,7 @@ class _RoomsPageState extends State<RoomsPage> {
               ),
             )
           : StreamBuilder<List<types.Room>>(
-              stream: FirebaseChatCore.instance.rooms(),
+              stream: FirebaseChatCore.instance.rooms(orderByUpdatedAt: true),
               initialData: const [],
               builder: (context, snapshot) {
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -239,7 +239,7 @@ class _RoomsPageState extends State<RoomsPage> {
                     margin: const EdgeInsets.only(
                       bottom: 200,
                     ),
-                    child: const Text('No CircleChats yet!'),
+                    child: const Text('No chats yet!'),
                   );
                 }
 
