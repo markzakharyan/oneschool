@@ -8,6 +8,7 @@ import 'users.dart';
 import 'package:home_indicator/home_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'signintest.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 
 User? _user;
@@ -23,7 +24,11 @@ void main() async {
   });
 
   await HomeIndicator.hide();
-  runApp(MaterialApp(home: _user != null ? MyApp() : SignUp4(themeBloc: ThemeBloc())));
+  runApp(
+    Phoenix(
+        child: MaterialApp(home: _user != null ? MyApp() : SignUp4(themeBloc: ThemeBloc()))
+    )
+  );
 }
 
 class MyApp extends StatefulWidget {

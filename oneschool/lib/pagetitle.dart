@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
-
-AppBar pageTitle(String text, {bool search = false}){
+AppBar pageTitle(String text, {Widget? icon}){
   return AppBar(
     centerTitle: false,
     title: Text(
       text,
       style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xff3e5aeb)),
     ),
-    actions: search == false ? [] :
+    actions:
     <Widget>[
-      IconButton(
-        icon: Icon(
-          Icons.search,
-          color: Color(0xff3e5aeb),
-        ),
-        onPressed: () {
-          // do something
-        },
-      )
+      icon ?? Container(),
     ],
     backgroundColor: Colors.transparent,
     elevation: 0,

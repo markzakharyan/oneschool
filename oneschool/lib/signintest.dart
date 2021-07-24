@@ -334,6 +334,9 @@ class Authentication {
           );
         }
         if (user != null) {
+          print(user.email);
+          print(user.email!.split('@')[1] == 'iusd.org' ? 'in iusd' : 'outside iusd');
+          print(num.tryParse(user.email!.substring(0,2)) != null ? 'student' : 'not student');
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => MyApp(),
@@ -409,7 +412,7 @@ class _SignUp4State extends State<SignUp4> {
                 padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                 child:
                 Text(
-                  'CircleChat is currently open for popular consumption for students attending University High School. An iusd.org Google account is required.',
+                  'OneSchool is currently open for popular consumption for students, parents, and coaches attending University High School. An iusd.org Google account is required unless you\'re joining a parent chat.',
                   textAlign: TextAlign.center,
                   style: theme.textTheme.subtitle2!.copyWith(
                       color: Color(0xFFA3A3A3), fontWeight: FontWeight.bold),
@@ -441,9 +444,7 @@ class _SignUp4State extends State<SignUp4> {
                             fontWeight: FontWeight.w600,
                             fontSize: 14.0),
                         onPressed: () {
-                          var x = Authentication.signInWithGoogle(context: context);
-                          print(x);
-
+                          Authentication.signInWithGoogle(context: context);
                         },
                       );
                     }
