@@ -10,6 +10,7 @@ import 'users.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'signintest.dart';
 import 'pagetitle.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 class RoomsPage extends StatefulWidget {
   const RoomsPage({Key? key}) : super(key: key);
@@ -48,8 +49,8 @@ Widget _latestMessageAgo(types.Room room) {
         }
 
         Map<String, dynamic> dataMap = snapshot.data!.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
-        latestMessageAgo = dataMap.containsKey('lastMessage')
-            ? timeago.format(dataMap['lastMessage']['createdAt'].toDate())
+        latestMessageAgo = dataMap.containsKey('lastMessages')
+            ? timeago.format(dataMap['lastMessages'][0]['createdAt'].toDate())
             : '';
 
         return latestMessageAgoFormat(latestMessageAgo);
@@ -130,6 +131,7 @@ class _RoomsPageState extends State<RoomsPage> {
 
   void logout() async {
     await FirebaseAuth.instance.signOut();
+    Phoenix.rebirth(context);
   }
 
 
@@ -203,7 +205,18 @@ class _RoomsPageState extends State<RoomsPage> {
 
     return Scaffold(
 
-      appBar: pageTitle('Messages',search: true),
+      appBar: pageTitle('Messages',icon:
+      IconButton(
+        icon: Icon(
+          Icons.logout,
+          color: Color(0xff3e5aeb),
+        ),
+        onPressed: () {
+          logout();
+          //do something
+        },
+      )
+      ),
 
       body: _user == null
           ? Container(
@@ -353,7 +366,7 @@ Widget _messagesUnread(types.Room room, User user) {
         }
 
         Map<String, dynamic> dataMap = snapshot.data!.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
-        if (dataMap.containsKey('lastMessage')){
+        if (dataMap.containsKey('lastMessages')){
           lastSeenTimestamp = dataMap.containsKey('lastSeen') ? dataMap['lastSeen']['${user.uid}'] : '';
           return StreamBuilder(
             stream: FirebaseFirestore.instance.collection('rooms/${room.id}/messages').where('createdAt', isGreaterThanOrEqualTo: lastSeenTimestamp).limit(100).snapshots(),
