@@ -132,6 +132,12 @@ class _RoomsPageState extends State<RoomsPage> {
   void logout() async {
     await FirebaseAuth.instance.signOut();
     Phoenix.rebirth(context);
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => SignUp4(themeBloc: _themeBloc!),
+      ),
+    );
   }
 
 
