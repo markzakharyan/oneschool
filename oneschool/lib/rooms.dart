@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:oneschool/users.dart';
 import 'chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -278,6 +279,12 @@ class _RoomsPageState extends State<RoomsPage> {
                         TextButton(
                           onPressed: () {
                             //bottomNavigationKey = 0;
+                            Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (context) => const UsersPage(),
+                                )
+                            );
                           },
                           child: const Text(
                               'Create One',
