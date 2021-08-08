@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 AppBar pageTitle(String text, {Widget? icon}){
   return AppBar(
+    iconTheme: IconThemeData(
+      color: Color(0xff3e5aeb), //change your color here
+    ),
     centerTitle: false,
     title: Text(
       text,

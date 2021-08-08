@@ -1,12 +1,11 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'chat.dart';
-import 'login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'users.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'signintest.dart';
 import 'pagetitle.dart';
@@ -84,7 +83,7 @@ Widget _latestMessage(types.Room room) {
               : latestMessageDisplayText);
         }
 
-        Map<String, dynamic> dataMap = snapshot.data!.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
+        Map<String, dynamic> dataMap = snapshot.data?.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
         latestMessageDisplayText = dataMap.containsKey('lastMessages')
             ? dataMap['lastMessages'][0]['text']
             : 'No messages yet';
@@ -102,13 +101,12 @@ class _RoomsPageState extends State<RoomsPage> {
   bool _error = false;
   bool _initialized = false;
   User? _user;
-  ThemeBloc? _themeBloc;
+
 
   @override
   void initState() {
     super.initState();
     initializeFlutterFire();
-    _themeBloc = ThemeBloc();
   }
 
   void initializeFlutterFire() async {
@@ -129,16 +127,7 @@ class _RoomsPageState extends State<RoomsPage> {
     }
   }
 
-  void logout() async {
-    await FirebaseAuth.instance.signOut();
-    Phoenix.rebirth(context);
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (context) => SignUp4(themeBloc: _themeBloc!),
-      ),
-    );
-  }
+
 
 
   Widget _verifiedText(chatType, text) {
@@ -193,12 +182,24 @@ class _RoomsPageState extends State<RoomsPage> {
 
   Future reachedEndOfChat(types.Room room) async{
     return await FirebaseFirestore.instance.collection('rooms').doc('${room.id}').update({
-      'lastSeen' : {'${FirebaseChatCore.instance.firebaseUser?.uid ?? ''}':DateTime.now()}
+      'lastSeen' : {'${FirebaseChatCore.instance.firebaseUser!.uid}':DateTime.now()}
     });
   }
 
   @override
   Widget build(BuildContext context) {
+
+    void logout() async {
+      await FirebaseAuth.instance.signOut();
+      await Phoenix.rebirth(context);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => SignUp4(themeBloc: ThemeBloc()),
+          ),
+              (route)=>false
+      );
+    }
 
 
     if (_error) {
@@ -211,8 +212,8 @@ class _RoomsPageState extends State<RoomsPage> {
 
     return Scaffold(
 
-      appBar: pageTitle('Messages',icon:
-      IconButton(
+      appBar: pageTitle(((_user?.email?.split('@')[1] == 'iusd.org') && (_user?.email?.substring(0,2)) != null) ? 'Messages' : 'Parent Account',
+      icon: IconButton(
         icon: Icon(
           Icons.logout,
           color: Color(0xff3e5aeb),
@@ -236,11 +237,12 @@ class _RoomsPageState extends State<RoomsPage> {
                   const Text('Not authenticated'),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).push(
+                      Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                           fullscreenDialog: true,
-                          builder: (context) => SignUp4(themeBloc: _themeBloc!),
+                          builder: (context) => SignUp4(themeBloc: ThemeBloc()),
                         ),
+                        (route)=>false
                       );
                     },
                     child: const Text('Login'),
@@ -258,7 +260,84 @@ class _RoomsPageState extends State<RoomsPage> {
                     margin: const EdgeInsets.only(
                       bottom: 200,
                     ),
-                    child: const Text('No chats yet!'),
+                    child: ((_user?.email?.split('@')[1] == 'iusd.org') && (_user?.email?.substring(0,2)) != null) ?
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                            'No Chats Yet',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Color(0xff9e9cab),
+                            fontFamily: 'Avenir',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            height: 1.5,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            bottomNavigationKey = 0;
+                          },
+                          child: const Text(
+                              'Create One',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Color(0xff3e5aeb),
+                              fontFamily: 'Avenir',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              height: 1.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ) : Center(
+                      child:Container(
+                        alignment: Alignment.center,
+                        //margin: const EdgeInsets.only(bottom: 200,),
+                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('For Safety and Security Reasons',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Color(0xff9e9cab),
+                              fontFamily: 'Avenir',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              height: 1.5,
+                            ),
+
+                          ),
+
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+
+                              children: [
+                                TextSpan(
+                                  text: 'Since this is a parent account, you can only be added to sports and club chats and your account isn\'t discoverable otherwise. Chats will appear here once you\'re added to them. If this is a mistake, ',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                    text: 'logout',
+                                    style: TextStyle(color: Color(0xff3e5aeb)),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        logout();
+                                      }
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ),
                   );
                 }
 
@@ -371,7 +450,7 @@ Widget _messagesUnread(types.Room room, User user) {
           return _UnreadIndicator(messagesUnread ?? 0);
         }
 
-        Map<String, dynamic> dataMap = snapshot.data!.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
+        Map<String, dynamic> dataMap = snapshot.data?.data() as Map<String, dynamic>; //When in doubt, use a hashmap :D
         if (dataMap.containsKey('lastMessages')){
           lastSeenTimestamp = dataMap.containsKey('lastSeen') ? dataMap['lastSeen']['${user.uid}'] : '';
           return StreamBuilder(

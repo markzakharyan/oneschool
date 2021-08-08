@@ -53,6 +53,7 @@ dependencies:
   algolia: ^1.0.1
   flutter_phoenix: ^1.0.0
 
+
 dev_dependencies:
   change_app_package_name: ^1.0.0
   flutter_test:

@@ -34,12 +34,12 @@ void main() async {
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
-  _BottomNavBarState createState() => _BottomNavBarState();
+  BottomNavBarState createState() => BottomNavBarState();
 }
 
-class _BottomNavBarState extends State<MyApp> {
+class BottomNavBarState extends State<MyApp> {
   int _page = 1;
-  final GlobalKey _bottomNavigationKey = GlobalKey();
+  final GlobalKey bottomNavigationKey = GlobalKey();
 
   final List<Widget> _pages = <Widget>[
     const UsersPage(),
@@ -58,8 +58,8 @@ class _BottomNavBarState extends State<MyApp> {
         child: _pages.elementAt(_page),
       ),
 
-        bottomNavigationBar: CurvedNavigationBar(
-          key: _bottomNavigationKey,
+        bottomNavigationBar: ((_user?.email?.split('@')[1] == 'iusd.org') && (_user?.email?.substring(0,2)) != null) ? CurvedNavigationBar(
+          key: bottomNavigationKey,
           index: 1,
           height: 50.0,
           items: <Widget>[
@@ -78,7 +78,7 @@ class _BottomNavBarState extends State<MyApp> {
               _page = index;
             });
           },
-        ),
+        ) : null,
         );
   }
 }

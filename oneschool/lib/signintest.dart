@@ -265,10 +265,11 @@ class Authentication {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      Navigator.of(context).pushReplacement(
+      Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) => MyApp(),
         ),
+        (route)=>false
       );
     }
 
@@ -339,7 +340,7 @@ class Authentication {
           print(num.tryParse(user.email!.substring(0,2)) != null ? 'student' : 'not student');
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => MyApp(),
+              builder: (context) => MyApp()
             ),
           );
         }
