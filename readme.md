@@ -41,18 +41,9 @@ Distributed under the "it's my fucking shit dont you dare steal it" License. See
 
 [Privacy Policy](https://fuckoff.com)
 
-<!-- CONTACT -->
-## Contact
-
-Mark Zakharyan - [Instagram - @markzakharyan](https://instagram.com/markzakharyan) - markazakharyan@gmail.com
-
-Project Link: [https://github.com/markzakharyan/oneschool](https://github.com/markzakharyan/oneschool)
-
-
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
 * []()Thank you to myself for making this
 * []()Thank you to ryan alavi for promising to spread this like covid-21
-* []()Thank you to comet_the_femboy for being a sexy femboi <3 i want to have silly time please please please please please please please please please please please please please
